@@ -1,24 +1,36 @@
-import express from "express";
-import ScrapeRouter from "./routes/scrape.route";
 import dotenv from "dotenv";
-import { initVectorStore } from "./lib/vector-store-initialzation";
-import PdfRouter from "./routes/pdf-upload.route";
-import ImageClassifyRouter from "./routes/image-classify.route";
-import ChatRouter from "./routes/chat.route";
-
 dotenv.config();
+import app from "./app";
+import { initVectorStore } from "./lib/vector-store-initialzation";
 
-const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+let server;
 
-app.use("/api/v1", ScrapeRouter);
-app.use("/api/v1", PdfRouter);
-app.use("/api/v1", ImageClassifyRouter);
-app.use("/api/v1", ChatRouter);
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+server = app.listen(PORT, () => {
   initVectorStore();
+  console.log(`Server is running on port ${PORT}`);
+});
+
+const exitHandler = () => {
+  if (server) {
+    console.info("Server closed.");
+    process.exit(1);
+  } else {
+    process.exit(1);
+  }
+};
+
+const unexpectedErrorHandler = (error: any) => {
+  console.error(error);
+  exitHandler();
+};
+process.on("uncaughtException", unexpectedErrorHandler);
+process.on("unhandledRejection", unexpectedErrorHandler);
+
+process.on("SIGTERM", () => {
+  if (server) {
+    console.info("Server closed.");
+    process.exit(1);
+  }
 });
