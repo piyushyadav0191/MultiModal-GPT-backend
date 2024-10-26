@@ -12,5 +12,3 @@ export const initVectorStore = async () => {
     astraConfig
   );
 };
-
-
