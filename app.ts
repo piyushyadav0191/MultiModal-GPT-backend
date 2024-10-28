@@ -6,12 +6,15 @@ import ScrapeRouter from "./routes/scrape.route";
 import PdfRouter from "./routes/pdf-upload.route";
 import ImageClassifyRouter from "./routes/image-classify.route";
 import ChatRouter from "./routes/chat.route";
+import cors from "cors"
 
 const app = express();
 
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
+
+app.use(cors())
 
 app.use(express.json());
 
