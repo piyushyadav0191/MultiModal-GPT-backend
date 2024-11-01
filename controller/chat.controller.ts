@@ -84,7 +84,7 @@ export const ChatController = async (req: Request, res: Response) => {
           "You are a relevance checking assistant. Be strict in determining relevance.",
       },
       { role: "user", content: relevanceCheckPrompt },
-    ]);
+    ]); // REVELANT OR NOT_RELEVANT
 
     let systemPrompt;
     if (relevanceCheck.includes("RELEVANT")) {

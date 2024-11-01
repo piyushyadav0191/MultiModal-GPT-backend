@@ -7,6 +7,9 @@ import PdfRouter from "./routes/pdf-upload.route";
 import ImageClassifyRouter from "./routes/image-classify.route";
 import ChatRouter from "./routes/chat.route";
 import cors from "cors"
+import { PrismaClient } from "@prisma/client";
+
+export const prisma = new PrismaClient();
 
 const app = express();
 
