@@ -22,9 +22,9 @@ webhookRouter.post("/webhook",  async (req: Request, res: Response) => {
 
 
   // Get the Svix headers for verification
-  const svix_id = headers["svix-id"];
-  const svix_timestamp = headers["svix-timestamp"];
-  const svix_signature = headers["svix-signature"];
+  const svix_id = headers["svix-id"] as string;
+  const svix_timestamp = headers["svix-timestamp"] as string;
+  const svix_signature = headers["svix-signature"] as string;
 
   // If there are no Svix headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
@@ -37,6 +37,16 @@ webhookRouter.post("/webhook",  async (req: Request, res: Response) => {
   // Create a new Svix instance with your secret.
   const wh = new Webhook(WEBHOOK_SECRET);
 
+  interface WebhookEvent {
+    data: {
+      id: string;
+      email_addresses?: { email_address: string }[];
+      image_url?: string;
+      username?: string;
+    };
+    type: string;
+  }
+  
   let evt;
 
   // Verify the payload with the headers
@@ -45,7 +55,7 @@ webhookRouter.post("/webhook",  async (req: Request, res: Response) => {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
-    });
+    }) as WebhookEvent;
   } catch (err) {
     console.error("Error verifying webhook:", err);
     return res.status(400).json({ error: "Error occurred" });
@@ -59,7 +69,7 @@ webhookRouter.post("/webhook",  async (req: Request, res: Response) => {
       const { email_addresses, image_url, username } = evt.data;
       const userData = {
         clerkId: id,
-        email: email_addresses[0].email_address,
+        email: email_addresses && email_addresses.length > 0 ? email_addresses[0].email_address : "",
         username: username || null,
         image_url: image_url,
       };
