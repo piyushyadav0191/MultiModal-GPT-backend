@@ -8,6 +8,7 @@ import ImageClassifyRouter from "./routes/image-classify.route";
 import ChatRouter from "./routes/chat.route";
 import cors from "cors"
 import { PrismaClient } from "@prisma/client";
+import webhookRouter from "./routes/webhook.route";
 
 export const prisma = new PrismaClient();
 
@@ -21,6 +22,6 @@ app.use(cors())
 
 app.use(express.json());
 
-app.use("/api/v1", ScrapeRouter, PdfRouter, ImageClassifyRouter, ChatRouter);
+app.use("/api/v1", ScrapeRouter, PdfRouter, ImageClassifyRouter, ChatRouter, webhookRouter);
 
 export default app;
